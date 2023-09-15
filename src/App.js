@@ -2,11 +2,8 @@ import { FaLanguage } from 'react-icons/fa';
 import { useTranslation } from "react-i18next";
 import { Box, Button } from "@chakra-ui/react";
 import WeatherPanel from "./components/WeatherPanel";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react"; // Añade useCallback
 import { QueryClient, QueryClientProvider } from 'react-query';
-
-
-//const queryClient = new QueryClient();
 
 const App = () => {
   const { t, i18n } = useTranslation("global");
@@ -14,15 +11,15 @@ const App = () => {
     localStorage.getItem("language") || "en"
   );
 
-  const changeLanguage = (lang) => {
+  const changeLanguage = useCallback((lang) => {
     setLanguage(lang);
     i18n.changeLanguage(lang);
     localStorage.setItem("language", lang);
-  };
+  }, [i18n]); // Añade i18n como dependencia de useCallback
 
   useEffect(() => {
     changeLanguage(language);
-  }, [language]);
+  }, [language, changeLanguage]);
 
   const queryClient = new QueryClient(); 
   return (
